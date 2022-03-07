@@ -1,0 +1,19 @@
+package com.shanir.launcherservice.model;
+
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Data
+@Document(collection = "defaultConfiguration")
+public class DefaultConfiguration {
+    @Id
+    private String Id;
+    private boolean isCritical;
+    private Configuration configuration;
+
+    public DefaultConfiguration(boolean isCritical, Configuration configuration) {
+        this.isCritical = isCritical;
+        this.configuration = configuration;
+    }
+}
