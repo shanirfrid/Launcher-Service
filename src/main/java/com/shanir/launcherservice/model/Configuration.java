@@ -1,27 +1,26 @@
 package com.shanir.launcherservice.model;
 
 import java.util.List;
-import java.util.Map;
 
 public class Configuration {
     private String version;
     private boolean isOlympus;
     private String webAddress;
-    private Map<String, List<String>> baseToProxyAddress;
+    private  List<String> proxyAddress;
 
     public Configuration(String version, boolean isOlympus, String webAddress,
-                         Map<String, List<String>> baseToProxyAddress) {
+                         List<String> proxyAddress) {
         this.version = version;
         this.isOlympus = isOlympus;
         this.webAddress = webAddress;
-        this.baseToProxyAddress = baseToProxyAddress;
+        this.proxyAddress = proxyAddress;
     }
 
     public String getVersion() {
         return version;
     }
 
-    public boolean isOlympus() {
+    public boolean getIsOlympus() {
         return isOlympus;
     }
 
@@ -29,7 +28,7 @@ public class Configuration {
         return webAddress;
     }
 
-    public Map<String, List<String>> getBaseToProxyAddress() {
-        return baseToProxyAddress;
+    public List<String> getProxyAddress() {
+        return proxyAddress;
     }
 }

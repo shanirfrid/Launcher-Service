@@ -1,4 +1,4 @@
-package com.shanir.launcherservice.db;
+package com.shanir.launcherservice.repositories;
 
 import com.shanir.launcherservice.model.DefaultConfiguration;
 import org.springframework.data.mongodb.repository.Query;
