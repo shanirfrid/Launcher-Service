@@ -4,6 +4,8 @@ import com.shanir.launcherservice.model.Configuration;
 import com.shanir.launcherservice.model.HostConfiguration;
 import com.shanir.launcherservice.service.HostConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -18,10 +20,10 @@ public class ConfigurationController {
     }
 
     @PostMapping("/saveConfiguration")
-    public Mono<HostConfiguration> saveConfiguration(
+    public ResponseEntity<Mono<HostConfiguration>> saveConfiguration(
             @RequestBody HostConfiguration hostConfiguration) {
-        return this.hostConfigurationService
-                .saveHostConfiguration(hostConfiguration);
+        return new ResponseEntity<>(this.hostConfigurationService
+                .saveHostConfiguration(hostConfiguration), HttpStatus.OK);
     }
 
     @RequestMapping(value = {"/station/config/{hostName}",
@@ -31,5 +33,11 @@ public class ConfigurationController {
              @PathVariable(required = false) String proxyBase) {
         return this.hostConfigurationService.getConfiguration(hostName, proxyBase);
     }
-}
 
+    @DeleteMapping(value = "/deleteConfiguration/{hostName}")
+    public ResponseEntity<Mono<String>> deleteConfiguration(@PathVariable String hostName) {
+        return new ResponseEntity<>(
+                this.hostConfigurationService.deleteConfiguration(hostName),
+                HttpStatus.OK);
+    }
+}
