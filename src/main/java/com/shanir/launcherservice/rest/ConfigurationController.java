@@ -1,7 +1,7 @@
 package com.shanir.launcherservice.rest;
 
-import com.shanir.launcherservice.model.Configuration;
 import com.shanir.launcherservice.model.HostConfiguration;
+import com.shanir.launcherservice.model.RetrievedConfiguration;
 import com.shanir.launcherservice.service.HostConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,16 +28,16 @@ public class ConfigurationController {
 
     @RequestMapping(value = {"/station/config/{hostName}",
             "/station/config/{hostName}/{proxyBase}"})
-    public Mono<Configuration> getConfiguration
+    public Mono<RetrievedConfiguration> getConfiguration
             (@PathVariable String hostName,
              @PathVariable(required = false) String proxyBase) {
         return this.hostConfigurationService.getConfiguration(hostName, proxyBase);
     }
-
-    @DeleteMapping(value = "/deleteConfiguration/{hostName}")
-    public ResponseEntity<Mono<String>> deleteConfiguration(@PathVariable String hostName) {
-        return new ResponseEntity<>(
-                this.hostConfigurationService.deleteConfiguration(hostName),
-                HttpStatus.OK);
-    }
+//
+//    @DeleteMapping(value = "/deleteConfiguration/{hostName}")
+//    public ResponseEntity<Mono<String>> deleteConfiguration(@PathVariable String hostName) {
+//        return new ResponseEntity<>(
+//                this.hostConfigurationService.deleteConfiguration(hostName),
+//                HttpStatus.OK);
+//    }
 }

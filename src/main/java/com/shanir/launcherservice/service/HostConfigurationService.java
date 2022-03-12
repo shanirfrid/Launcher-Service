@@ -1,6 +1,6 @@
 package com.shanir.launcherservice.service;
 
-import com.shanir.launcherservice.model.Configuration;
+import com.shanir.launcherservice.model.RetrievedConfiguration;
 import com.shanir.launcherservice.repositories.DefaultConfigurationRepository;
 import com.shanir.launcherservice.repositories.HostConfigurationRepository;
 import com.shanir.launcherservice.model.GalaxyHost;
@@ -32,31 +32,45 @@ public class HostConfigurationService {
                 .map(GalaxyHost::getIsCritical);
     }
 
-    private Mono<Configuration> getDefaultConfiguration(String hostName,
-                                                        String proxyBase) {
+    private Mono<RetrievedConfiguration> fetchDefaultConfiguration(String hostName,
+                                                                   String proxyBase) {
         return fetchHostIsCritical(hostName)
-                .flatMap(this.defaultConfigurationRepository::getDefaultConfigurationByCritical)
-                .map(defaultConfig -> defaultConfig.getConfiguration(proxyBase));
+                .flatMap(this.defaultConfigurationRepository::
+                        getDefaultConfigurationByCritical)
+                .map(defaultConfig -> new RetrievedConfiguration(
+                        defaultConfig.getConfiguration(), proxyBase));
     }
 
-    public Mono<Configuration> getConfiguration(String hostName,
-                                                String proxyBase) {
-        return this.hostConfigurationRepository
-                .getConfigurationByHostName(hostName)
-                .flatMap(hostConfiguration -> hostConfiguration.getIsDefault() ?
-                        this.getDefaultConfiguration(hostName, proxyBase) :
-                        Mono.just(hostConfiguration.getConfiguration()));
-    }
-
-    public Mono<String> deleteConfiguration(String hostName) {
-        String defaultDeleteMessage = hostName + " configuration is default " +
-                "and therefore cannot by deleted only edited";
-        String nonDefaultDeleteMessage = hostName + " configuration deleted";
-
+    public Mono<RetrievedConfiguration> fetchAdHocConfiguration(String hostName,
+                                                                String proxyBase) {
         return this.hostConfigurationRepository.getConfigurationByHostName(hostName)
-                .flatMap(hostConfiguration -> hostConfiguration.getIsDefault() ?
-                        Mono.just(defaultDeleteMessage) :
-                        this.hostConfigurationRepository.delete(hostConfiguration)
-                                .thenReturn(nonDefaultDeleteMessage));
+                .map(adHocConfig -> new RetrievedConfiguration(
+                        adHocConfig.getConfiguration(),
+                        proxyBase));
     }
+
+    public Mono<RetrievedConfiguration> getConfiguration(String hostName,
+                                                         String proxyBase) {
+        return fetchDefaultConfiguration(hostName, proxyBase)
+                .flatMap(defaultConfig ->
+                        fetchAdHocConfiguration(hostName, proxyBase)
+                                .defaultIfEmpty(defaultConfig)
+                                .map(adhocConfig -> {
+                                    adhocConfig.setEmptyFieldsFromDefault(defaultConfig);
+                                    return adhocConfig;
+                                })
+                );
+    }
+//
+//    public Mono<String> deleteConfiguration(String hostName) {
+//        String defaultDeleteMessage = hostName + " configuration is default " +
+//                "and therefore cannot by deleted only edited";
+//        String nonDefaultDeleteMessage = hostName + " configuration deleted";
+//
+//        return this.hostConfigurationRepository.getConfigurationByHostName(hostName)
+//                .flatMap(hostConfiguration -> hostConfiguration.getIsDefault() ?
+//                        Mono.just(defaultDeleteMessage) :
+//                        this.hostConfigurationRepository.delete(hostConfiguration)
+//                                .thenReturn(nonDefaultDeleteMessage));
+//    }
 }
