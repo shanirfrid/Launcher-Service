@@ -1,6 +1,7 @@
 package com.shanir.launcherservice.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class RetrievedConfiguration {
     private String version;
@@ -21,7 +22,10 @@ public class RetrievedConfiguration {
         this.version = configuration.getVersion();
         this.isOlympus = configuration.getIsOlympus();
         this.webAddress = configuration.getWebAddress();
-        this.proxyAddress = configuration.getBaseToProxyAddress().get(proxyBase);
+        Map<String, List<String>> proxyAddressMap =
+                configuration.getBaseToProxyAddress();
+        this.proxyAddress = proxyAddressMap == null ? null :
+                proxyAddressMap.get(proxyBase);
     }
 
     public String getVersion() {
