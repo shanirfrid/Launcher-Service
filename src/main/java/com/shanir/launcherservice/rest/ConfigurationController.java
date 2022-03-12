@@ -33,11 +33,11 @@ public class ConfigurationController {
              @PathVariable(required = false) String proxyBase) {
         return this.hostConfigurationService.getConfiguration(hostName, proxyBase);
     }
-//
-//    @DeleteMapping(value = "/deleteConfiguration/{hostName}")
-//    public ResponseEntity<Mono<String>> deleteConfiguration(@PathVariable String hostName) {
-//        return new ResponseEntity<>(
-//                this.hostConfigurationService.deleteConfiguration(hostName),
-//                HttpStatus.OK);
-//    }
+
+    @DeleteMapping(value = "/deleteConfiguration/{hostName}")
+    public ResponseEntity<Mono<String>> deleteConfiguration(@PathVariable String hostName) {
+        return new ResponseEntity<>(
+                this.hostConfigurationService.deleteConfiguration(hostName),
+                HttpStatus.OK);
+    }
 }

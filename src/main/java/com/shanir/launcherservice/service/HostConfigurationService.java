@@ -61,16 +61,16 @@ public class HostConfigurationService {
                                 })
                 );
     }
-//
-//    public Mono<String> deleteConfiguration(String hostName) {
-//        String defaultDeleteMessage = hostName + " configuration is default " +
-//                "and therefore cannot by deleted only edited";
-//        String nonDefaultDeleteMessage = hostName + " configuration deleted";
-//
-//        return this.hostConfigurationRepository.getConfigurationByHostName(hostName)
-//                .flatMap(hostConfiguration -> hostConfiguration.getIsDefault() ?
-//                        Mono.just(defaultDeleteMessage) :
-//                        this.hostConfigurationRepository.delete(hostConfiguration)
-//                                .thenReturn(nonDefaultDeleteMessage));
-//    }
+
+    public Mono<String> deleteConfiguration(String hostName) {
+        String defaultDeleteMessage = hostName + " configuration is default " +
+                "and therefore cannot by deleted only edited";
+        String nonDefaultDeleteMessage = hostName + " configuration deleted";
+
+        return this.hostConfigurationRepository.getConfigurationByHostName(hostName)
+                .flatMap(hostConfiguration ->
+                        this.hostConfigurationRepository.delete(hostConfiguration)
+                                .thenReturn(nonDefaultDeleteMessage))
+                .defaultIfEmpty(defaultDeleteMessage);
+    }
 }
