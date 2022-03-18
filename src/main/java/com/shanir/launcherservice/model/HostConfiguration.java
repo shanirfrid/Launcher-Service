@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Optional;
+
 @Data
 @Document(collection = "configurations")
 public class HostConfiguration {
@@ -21,11 +23,11 @@ public class HostConfiguration {
 
     }
 
-    public String getHostName() {
-        return this.hostName;
+    public Optional<String> getHostName() {
+        return Optional.ofNullable(this.hostName);
     }
 
-    public Configuration getConfiguration() {
-        return this.configuration;
+    public Optional<Configuration> getConfiguration() {
+        return Optional.ofNullable(this.configuration);
     }
 }

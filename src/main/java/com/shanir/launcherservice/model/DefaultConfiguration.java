@@ -4,8 +4,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Data
 @Document(collection = "defaultConfiguration")
@@ -24,10 +23,10 @@ public class DefaultConfiguration {
     }
 
     public boolean getIsCritical() {
-        return isCritical;
+        return this.isCritical;
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
+    public Optional<Configuration> getConfiguration() {
+        return Optional.ofNullable(this.configuration);
     }
 }

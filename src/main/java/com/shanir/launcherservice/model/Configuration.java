@@ -2,6 +2,7 @@ package com.shanir.launcherservice.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Configuration {
     private String version;
@@ -21,19 +22,19 @@ public class Configuration {
 
     }
 
-    public String getVersion() {
-        return version;
+    public Optional<String> getVersion() {
+        return Optional.ofNullable(this.version);
     }
 
-    public Boolean getIsOlympus() {
-        return isOlympus;
+    public Optional<Boolean> getIsOlympus() {
+        return Optional.ofNullable(this.isOlympus);
     }
 
-    public String getWebAddress() {
-        return webAddress;
+    public Optional<String> getWebAddress() {
+        return Optional.ofNullable(this.webAddress);
     }
 
-    public Map<String, List<String>> getBaseToProxyAddress() {
-        return baseToProxyAddress;
+    public Optional<Map<String, List<String>>> getBaseToProxyAddress() {
+        return Optional.ofNullable(this.baseToProxyAddress);
     }
 }

@@ -37,16 +37,29 @@ public class HostConfigurationService {
         return fetchHostIsCritical(hostName)
                 .flatMap(this.defaultConfigurationRepository::
                         getDefaultConfigurationByCritical)
-                .map(defaultConfig -> new RetrievedConfiguration(
-                        defaultConfig.getConfiguration(), proxyBase));
+                .map(defaultConfig -> {
+                    if (defaultConfig.getConfiguration().isPresent()){
+                        return new RetrievedConfiguration(
+                                defaultConfig.getConfiguration().get(),
+                                proxyBase);
+                    }
+
+                    return new RetrievedConfiguration();
+                });
+
     }
 
     public Mono<RetrievedConfiguration> fetchAdHocConfiguration(String hostName,
                                                                 String proxyBase) {
         return this.hostConfigurationRepository.getConfigurationByHostName(hostName)
-                .map(adHocConfig -> new RetrievedConfiguration(
-                        adHocConfig.getConfiguration(),
-                        proxyBase));
+                .map(adHocConfig -> {
+                    if (adHocConfig.getConfiguration().isPresent())
+                        return new RetrievedConfiguration(
+                                adHocConfig.getConfiguration().get(),
+                                proxyBase);
+                    return new RetrievedConfiguration();
+                });
+
     }
 
     public Mono<RetrievedConfiguration> getConfiguration(String hostName,
@@ -56,7 +69,10 @@ public class HostConfigurationService {
                         fetchAdHocConfiguration(hostName, proxyBase)
                                 .defaultIfEmpty(defaultConfig)
                                 .map(adhocConfig -> {
-                                    adhocConfig.setEmptyFieldsFromDefault(defaultConfig);
+
+                                    if (adhocConfig != defaultConfig)
+                                        adhocConfig.setEmptyFieldsFromDefault(defaultConfig);
+
                                     return adhocConfig;
                                 })
                 );

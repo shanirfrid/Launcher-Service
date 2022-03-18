@@ -1,5 +1,7 @@
 package com.shanir.launcherservice.model;
 
+import java.util.Optional;
+
 public class GalaxyHost {
     private String hostName;
     private boolean isCritical;
@@ -17,19 +19,19 @@ public class GalaxyHost {
     public GalaxyHost() {
     }
 
-    public String getHostName() {
-        return this.hostName;
+    public Optional<String> getHostName() {
+        return Optional.ofNullable(this.hostName);
     }
 
     public boolean getIsCritical() {
         return this.isCritical;
     }
 
-    public String getStationId() {
-        return this.stationId;
+    public Optional<String> getStationId() {
+        return Optional.ofNullable(this.stationId);
     }
 
-    public String getStationName() {
-        return this.stationName;
+    public Optional<String> getStationName() {
+        return Optional.ofNullable(this.stationName);
     }
 }
