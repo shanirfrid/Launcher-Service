@@ -19,6 +19,9 @@ public class DefaultConfiguration {
         this.isCritical = isCritical;
         this.configuration = configuration;
     }
+    public DefaultConfiguration(){
+
+    }
 
     public boolean getIsCritical() {
         return isCritical;

@@ -17,6 +17,9 @@ public class Configuration {
         this.webAddress = webAddress;
         this.baseToProxyAddress = baseToProxyAddress;
     }
+    public Configuration(){
+
+    }
 
     public String getVersion() {
         return version;

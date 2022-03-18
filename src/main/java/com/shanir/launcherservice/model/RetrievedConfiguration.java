@@ -17,6 +17,10 @@ public class RetrievedConfiguration {
         this.proxyAddress = proxyAddress;
     }
 
+    public RetrievedConfiguration(){
+
+    }
+
     public RetrievedConfiguration(Configuration configuration,
                                   String proxyBase) {
         this.version = configuration.getVersion();

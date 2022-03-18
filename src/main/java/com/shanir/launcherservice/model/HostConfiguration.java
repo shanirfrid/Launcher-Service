@@ -17,6 +17,9 @@ public class HostConfiguration {
         this.hostName = hostName;
         this.configuration = configuration;
     }
+    public HostConfiguration(){
+
+    }
 
     public String getHostName() {
         return this.hostName;
