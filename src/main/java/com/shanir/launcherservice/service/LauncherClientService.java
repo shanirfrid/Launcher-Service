@@ -31,4 +31,14 @@ public class LauncherClientService {
 
         return versions.isEmpty() ? FAILURE_MESSAGE : versions.get(0);
     }
+
+    public String getPath(String version) {
+        return String.format("%slauncher-client-%s.zip", CLIENTS_DIR, version);
+    }
+
+    public boolean versionExists(String version) {
+        File launcherFile = new File(getPath(version));
+
+        return launcherFile.exists();
+    }
 }

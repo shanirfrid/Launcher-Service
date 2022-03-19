@@ -7,10 +7,17 @@ import com.shanir.launcherservice.service.DefaultConfigurationService;
 import com.shanir.launcherservice.service.HostConfigurationService;
 import com.shanir.launcherservice.service.LauncherClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 public class ConfigurationController {
@@ -60,5 +67,30 @@ public class ConfigurationController {
     @GetMapping(value = "/client/latest")
     public String getClientLatest() {
         return this.launcherClientService.getLatestVersion();
+    }
+
+    @RequestMapping(value = "/client/version/{version}")
+    public ResponseEntity getClientVersion(@PathVariable String version) {
+        if (!this.launcherClientService.versionExists(version))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No such " +
+                    "version exists");
+
+        String launcherPath = this.launcherClientService.getPath(version);
+        Path path = Paths.get(launcherPath);
+
+        try {
+            Resource resource = new UrlResource(path.toUri());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/zip"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
+
     }
 }
