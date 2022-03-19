@@ -10,7 +10,7 @@ import java.util.Optional;
 @Document(collection = "defaultConfiguration")
 public class DefaultConfiguration {
     @Id
-    private String Id;
+    private String id;
     private boolean isCritical;
     private Configuration configuration;
 
@@ -28,5 +28,11 @@ public class DefaultConfiguration {
 
     public Optional<Configuration> getConfiguration() {
         return Optional.ofNullable(this.configuration);
+    }
+
+    public void updateFields(DefaultConfiguration newDefaultConfiguration) {
+        if (newDefaultConfiguration.getConfiguration().isPresent())
+            this.configuration.updateConfiguration
+                    (newDefaultConfiguration.getConfiguration().get());
     }
 }

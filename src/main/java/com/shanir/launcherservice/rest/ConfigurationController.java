@@ -1,7 +1,9 @@
 package com.shanir.launcherservice.rest;
 
+import com.shanir.launcherservice.model.DefaultConfiguration;
 import com.shanir.launcherservice.model.HostConfiguration;
 import com.shanir.launcherservice.model.RetrievedConfiguration;
+import com.shanir.launcherservice.service.DefaultConfigurationService;
 import com.shanir.launcherservice.service.HostConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,11 +14,14 @@ import reactor.core.publisher.Mono;
 @RestController
 public class ConfigurationController {
     private final HostConfigurationService hostConfigurationService;
+    private final DefaultConfigurationService defaultConfigurationService;
 
     @Autowired
     public ConfigurationController(
-            HostConfigurationService hostConfigurationService) {
+            HostConfigurationService hostConfigurationService,
+            DefaultConfigurationService defaultConfigurationService) {
         this.hostConfigurationService = hostConfigurationService;
+        this.defaultConfigurationService = defaultConfigurationService;
     }
 
     @PostMapping("/saveConfiguration")
@@ -39,5 +44,12 @@ public class ConfigurationController {
         return new ResponseEntity<>(
                 this.hostConfigurationService.deleteConfiguration(hostName),
                 HttpStatus.OK);
+    }
+
+    @PostMapping("/updateDefaultConfig")
+    public ResponseEntity<Mono<DefaultConfiguration>> updateDefaultConfig(
+            @RequestBody DefaultConfiguration defaultConfiguration) {
+        return new ResponseEntity<>(this.defaultConfigurationService
+                .updateDefaultConfiguration(defaultConfiguration), HttpStatus.OK);
     }
 }

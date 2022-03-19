@@ -37,4 +37,15 @@ public class Configuration {
     public Optional<Map<String, List<String>>> getBaseToProxyAddress() {
         return Optional.ofNullable(this.baseToProxyAddress);
     }
+
+    public void updateConfiguration(Configuration configuration) {
+        this.version = configuration.getVersion().isPresent() ?
+                configuration.getVersion().get() : this.version;
+        this.isOlympus = configuration.getIsOlympus().isPresent() ?
+                configuration.getIsOlympus().get() : this.isOlympus;
+        this.webAddress = configuration.getWebAddress().isPresent() ?
+                configuration.getWebAddress().get() : this.webAddress;
+        this.baseToProxyAddress = configuration.getBaseToProxyAddress().isPresent() ?
+                configuration.getBaseToProxyAddress().get() : this.baseToProxyAddress;
+    }
 }
