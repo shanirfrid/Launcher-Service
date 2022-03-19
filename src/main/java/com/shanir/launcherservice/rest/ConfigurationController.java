@@ -5,6 +5,7 @@ import com.shanir.launcherservice.model.HostConfiguration;
 import com.shanir.launcherservice.model.RetrievedConfiguration;
 import com.shanir.launcherservice.service.DefaultConfigurationService;
 import com.shanir.launcherservice.service.HostConfigurationService;
+import com.shanir.launcherservice.service.LauncherClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,16 @@ import reactor.core.publisher.Mono;
 public class ConfigurationController {
     private final HostConfigurationService hostConfigurationService;
     private final DefaultConfigurationService defaultConfigurationService;
+    private final LauncherClientService launcherClientService;
 
     @Autowired
     public ConfigurationController(
             HostConfigurationService hostConfigurationService,
-            DefaultConfigurationService defaultConfigurationService) {
+            DefaultConfigurationService defaultConfigurationService,
+            LauncherClientService launcherClientService) {
         this.hostConfigurationService = hostConfigurationService;
         this.defaultConfigurationService = defaultConfigurationService;
+        this.launcherClientService = launcherClientService;
     }
 
     @PostMapping("/saveConfiguration")
@@ -51,5 +55,10 @@ public class ConfigurationController {
             @RequestBody DefaultConfiguration defaultConfiguration) {
         return new ResponseEntity<>(this.defaultConfigurationService
                 .updateDefaultConfiguration(defaultConfiguration), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/client/latest")
+    public String getClientLatest() {
+        return this.launcherClientService.getLatestVersion();
     }
 }
