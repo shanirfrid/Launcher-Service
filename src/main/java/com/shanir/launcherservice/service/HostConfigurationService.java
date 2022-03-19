@@ -70,10 +70,7 @@ public class HostConfigurationService {
                         fetchAdHocConfiguration(hostName, proxyBase)
                                 .defaultIfEmpty(defaultConfig)
                                 .map(adhocConfig -> {
-
-                                    if (adhocConfig != defaultConfig)
-                                        adhocConfig.setEmptyFieldsFromDefault(defaultConfig);
-
+                                    adhocConfig.setDefaultConfig(defaultConfig);
                                     return adhocConfig;
                                 })
                 );

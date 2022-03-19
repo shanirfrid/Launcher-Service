@@ -74,7 +74,10 @@ public class RetrievedConfiguration {
         return Optional.ofNullable(this.proxyAddress);
     }
 
-    public void setEmptyFieldsFromDefault(RetrievedConfiguration defaultConfiguration) {
+    public void setDefaultConfig(RetrievedConfiguration defaultConfiguration) {
+        if (this == defaultConfiguration)
+            return;
+
         this.defaultConfiguration = defaultConfiguration;
     }
 }
