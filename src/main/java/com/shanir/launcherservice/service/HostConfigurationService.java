@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 public class HostConfigurationService {
     private final HostConfigurationRepository hostConfigurationRepository;
     private final DefaultConfigurationRepository defaultConfigurationRepository;
+    private final WebClient webClient = WebClient.create();
 
     public Mono<HostConfiguration> saveHostConfiguration(
             HostConfiguration hostConfiguration) {
@@ -24,7 +25,7 @@ public class HostConfigurationService {
     private Mono<Boolean> fetchHostIsCritical(String hostName) {
         final String uri = "http://localhost:8023/entity/post/"
                 + hostName;
-        return WebClient.create()
+        return this.webClient
                 .get()
                 .uri(uri)
                 .retrieve()
