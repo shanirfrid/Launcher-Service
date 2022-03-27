@@ -23,7 +23,7 @@ public class HostConfigurationService {
     }
 
     private Mono<Boolean> fetchHostIsCritical(String hostName) {
-        final String uri = "http://localhost:8023/entity/post/"
+        final String uri = "http://host.docker.internal:8023/entity/post/"
                 + hostName;
         return this.webClient
                 .get()

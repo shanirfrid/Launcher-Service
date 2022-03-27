@@ -5,6 +5,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id "org.springframework.boot" version "2.6.4"
 }
 
 repositories {
@@ -26,7 +27,6 @@ dependencies {
 group = 'com.shanir'
 version = '0.0.1-SNAPSHOT'
 description = 'launcher-service'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 
 //noinspection GroovyAssignabilityCheck

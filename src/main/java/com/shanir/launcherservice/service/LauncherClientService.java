@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class LauncherClientService {
     private final static String CLIENT_FILENAME_REGEX =
             "launcher-client-[0-9]+\\.[0-9]+\\.[0-9]+\\.zip";
-    private final static String CLIENTS_DIR = "c:/clients/";
+    private final static String CLIENTS_DIR = "/var/clients/";
     private final static String FAILURE_MESSAGE = "No client version was found";
 
     public String extractVersion(String fileName){
