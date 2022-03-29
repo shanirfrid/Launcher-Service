@@ -9,11 +9,15 @@ import com.shanir.launcherservice.service.LauncherClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -44,17 +48,18 @@ public class ConfigurationController {
 
     @RequestMapping(value = {"/station/config/{hostName}",
             "/station/config/{hostName}/{proxyBase}"})
-    public Mono<RetrievedConfiguration> getConfiguration
+    public ResponseEntity<Mono<RetrievedConfiguration>> getConfiguration
             (@PathVariable String hostName,
              @PathVariable(required = false) String proxyBase) {
-        return this.hostConfigurationService.getConfiguration(hostName, proxyBase);
+        return new ResponseEntity<>(
+                this.hostConfigurationService.getConfiguration(hostName,
+                        proxyBase),
+                HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/deleteConfiguration/{hostName}")
-    public ResponseEntity<Mono<String>> deleteConfiguration(@PathVariable String hostName) {
-        return new ResponseEntity<>(
-                this.hostConfigurationService.deleteConfiguration(hostName),
-                HttpStatus.OK);
+    public  Mono<ResponseEntity<Void>> deleteConfiguration(@PathVariable String hostName) {
+        return this.hostConfigurationService.deleteConfiguration(hostName);
     }
 
     @PostMapping("/updateDefaultConfig")
@@ -70,27 +75,27 @@ public class ConfigurationController {
     }
 
     @RequestMapping(value = "/client/version/{version}")
-    public ResponseEntity getClientVersion(@PathVariable String version) {
+    public ResponseEntity<Flux<DataBuffer>> getClientVersion(@PathVariable String version) {
         if (!this.launcherClientService.versionExists(version))
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No such " +
-                    "version exists");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
         String launcherPath = this.launcherClientService.getPath(version);
         Path path = Paths.get(launcherPath);
 
         try {
             Resource resource = new UrlResource(path.toUri());
+
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/zip"))
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
+                    .body(DataBufferUtils.read(
+                            resource,
+                            new DefaultDataBufferFactory(),
+                            4096));
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
-
     }
 }

@@ -6,8 +6,11 @@ import com.shanir.launcherservice.repositories.HostConfigurationRepository;
 import com.shanir.launcherservice.model.GalaxyHost;
 import com.shanir.launcherservice.model.HostConfiguration;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -76,15 +79,11 @@ public class HostConfigurationService {
                 );
     }
 
-    public Mono<String> deleteConfiguration(String hostName) {
-        String defaultDeleteMessage = hostName + " configuration is default " +
-                "and therefore cannot by deleted only edited";
-        String nonDefaultDeleteMessage = hostName + " configuration deleted";
-
+    public Mono<ResponseEntity<Void>> deleteConfiguration(String hostName) {
         return this.hostConfigurationRepository.getConfigurationByHostName(hostName)
                 .flatMap(hostConfiguration ->
                         this.hostConfigurationRepository.delete(hostConfiguration)
-                                .thenReturn(nonDefaultDeleteMessage))
-                .defaultIfEmpty(defaultDeleteMessage);
+                        .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK))))
+                        .defaultIfEmpty(ResponseEntity.internalServerError().build());
     }
 }
