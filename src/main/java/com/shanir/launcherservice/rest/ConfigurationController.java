@@ -58,7 +58,7 @@ public class ConfigurationController {
     }
 
     @DeleteMapping(value = "/deleteConfiguration/{hostName}")
-    public  Mono<ResponseEntity<Void>> deleteConfiguration(@PathVariable String hostName) {
+    public Mono<ResponseEntity<Void>> deleteConfiguration(@PathVariable String hostName) {
         return this.hostConfigurationService.deleteConfiguration(hostName);
     }
 
@@ -70,8 +70,15 @@ public class ConfigurationController {
     }
 
     @GetMapping(value = "/client/latest")
-    public String getClientLatest() {
-        return this.launcherClientService.getLatestVersion();
+    public ResponseEntity<String> getClientLatest() {
+        try {
+            return new ResponseEntity<>(
+                    this.launcherClientService.getLatestVersion(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/client/version/{version}")
@@ -84,7 +91,6 @@ public class ConfigurationController {
 
         try {
             Resource resource = new UrlResource(path.toUri());
-
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/zip"))
                     .header(HttpHeaders.CONTENT_DISPOSITION,

@@ -10,17 +10,17 @@ public class LauncherClientService {
     private final static String CLIENT_FILENAME_REGEX =
             "launcher-client-[0-9]+\\.[0-9]+\\.[0-9]+\\.zip";
     private final static String CLIENTS_DIR = "/var/clients/";
-    private final static String FAILURE_MESSAGE = "No client version was found";
 
     public String extractVersion(String fileName){
         return fileName.split("-")[2].split("\\.zip")[0];
     }
 
-    public String getLatestVersion() {
+    public String getLatestVersion() throws Exception {
+        Exception failureException = new Exception("No clients found");
         File clientsDir = new File(CLIENTS_DIR);
         File[] files = clientsDir.listFiles();
 
-        if (files == null) return FAILURE_MESSAGE;
+        if (files == null) throw failureException;
 
         List<String> versions = Arrays.stream(files)
                 .map(File::getName)
@@ -29,7 +29,10 @@ public class LauncherClientService {
                 .sorted(Collections.reverseOrder())
                 .collect(Collectors.toList());
 
-        return versions.isEmpty() ? FAILURE_MESSAGE : versions.get(0);
+        if (versions.isEmpty())
+            throw failureException;
+
+        return versions.get(0);
     }
 
     public String getPath(String version) {
